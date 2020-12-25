@@ -14,6 +14,7 @@ struct Book
 
 int writeFile(char fname[], Book books[], int size);
 int readFile(char fname[], std::vector<Book>& books);
+void printBooks(std::vector<Book>& books);
 
 
 int main() {
@@ -35,7 +36,9 @@ int main() {
 	std::vector<Book> newBooks;
 
 	printf("Writing data from the file %s . . .\n", fileName);
-	readFile(fileName);
+	readFile(fileName, newBooks);
+
+	printBooks(newBooks);
 
 	system("pause");
 	return 0;
@@ -86,10 +89,32 @@ int readFile(char fname[], std::vector<Book>& books)
 
 
 	while (fgets(buff, 256, f) != NULL) {
-
+		Book b;
 		printf("%s", buff);
+		//title
+		char* subStr = strtok(buff, "|\n");
+		strcpy(b.title, subStr);
+		//author
+		subStr = strtok(NULL, "|\n");
+		strcpy(b.author, subStr);
+		//page number
+		subStr = strtok(NULL, "|\n");
+		int pageNumber = atoi(subStr);
+		b.pageNumber = pageNumber;
+		//price
+		subStr = strtok(NULL, "|\n");
+		float price = atof(subStr);
+		b.price = price;
 
+		books.push_back(b);
 	}
 	fclose(f);
 	return 0;
+}
+
+void printBooks(std::vector<Book>& books)
+{
+	for (int i = 0; i < books.size(); i++) {
+		printf("Title: %s, Author: %s, page number: %d, price: %f", books[i].title, books[i].author, books[i].pageNumber, books[i].price);
+	}
 }
