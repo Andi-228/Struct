@@ -31,12 +31,29 @@ int main() {
 	};
 
 	printf("Writing data to the file %s . . .\n", fileName);
-	writeFile(fileName, books, size);
+	int err_no = writeFile(fileName, books, size);
+	if (err_no == 1) {
+		return 1;
+		printf("Error while opening file/n");
+	}
+	if (err_no == 2) {
+		return 2;
+		printf("Error while clothing file/n");
+	}
 
 	std::vector<Book> newBooks;
 
 	printf("Writing data from the file %s . . .\n", fileName);
-	readFile(fileName, newBooks);
+	err_no = readFile(fileName, newBooks);
+
+	if (err_no == 1) {
+		return 1;
+		printf("Error while opening file/n");
+	}
+	if (err_no == 2) {
+		return 2;
+		printf("Error while clothing file/n");
+	}
 
 	printBooks(newBooks);
 
@@ -70,11 +87,18 @@ int writeFile(char fname[], Book books[], int size)
 
 	f = fopen(fname, "w");
 
+	if (f == NULL) {
+		return 1;
+	}
+
 	for (int i = 0; i < size; i++) {
 		fprintf(f, "%s | %s | %d | %f\n", books[i].title, books[i].author, books[i].pageNumber, books[i].price);
 	}
 
-	fclose(f);
+
+	if (fclose(f) != NULL) {
+		return 2;
+	}
 
 	return 0;
 }
@@ -84,6 +108,10 @@ int readFile(char fname[], std::vector<Book>& books)
 	FILE* f;
 
 	f = fopen(fname, "r");
+
+	if (f == NULL) {
+		return 1;
+	}
 
 	char buff[256];
 
